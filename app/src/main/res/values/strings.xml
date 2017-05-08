@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">VkNick</string>
+    <string name="title_music">Music</string>
+    <string name="title_feed">Feed</string>
+    <string name="title_messages">Messages</string>
+    <integer name="com_vk_sdk_AppId">6022211</integer>
+</resources>

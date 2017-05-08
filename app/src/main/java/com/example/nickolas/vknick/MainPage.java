@@ -1,12 +1,10 @@
 package com.example.nickolas.vknick;
 
 import android.content.Intent;
-import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
@@ -25,10 +23,10 @@ public class MainPage extends AppCompatActivity {
 
 
     private FragmentTransaction fragT;
-    private Fragment dialogs;
     private String[] scope = new String[]{VKScope.MESSAGES, VKScope.FRIENDS, VKScope.WALL, VKScope.AUDIO};
+    private int selected;
 
-
+    com.example.nickolas.vknick.DialogFragment dialogFragment;
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -37,19 +35,25 @@ public class MainPage extends AppCompatActivity {
             fragT = getSupportFragmentManager().beginTransaction();
             switch (item.getItemId()) {
                 case R.id.navigation_music:
-                    mTextMessage.setText(R.string.title_music);
-                    fragT.remove(dialogs);
-                    fragT.commit();
+                    if (selected != R.id.navigation_music   ) {
+                        selected = R.id.navigation_music;
+                        fragT.remove(dialogFragment);
+                        fragT.commit();
+                    }
                     return true;
                 case R.id.navigation_feed:
-                    mTextMessage.setText(R.string.title_feed);
-                    fragT.remove(dialogs);
-                    fragT.commit();
+                    if (R.id.navigation_feed != selected) {
+                        selected = R.id.navigation_feed;
+                        fragT.remove(dialogFragment);
+                        fragT.commit();
+                    }
                     return true;
                 case R.id.navigation_messages:
-                    mTextMessage.setText(R.string.title_messages);
-                    fragT.add(R.id.last_message_view, dialogs);
-                    fragT.commit();
+                    if (selected != R.id.navigation_messages) {
+                        selected = R.id.navigation_messages;
+                        fragT.add(R.id.frame_view, dialogFragment);
+                        fragT.commit();
+                    }
                     return true;
             }
             return false;
@@ -62,15 +66,16 @@ public class MainPage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_page);
 
-        mTextMessage = (TextView) findViewById(R.id.message);
+//        mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
 
-        FrameLayout frameLayout = (FrameLayout) findViewById(R.id.last_message_view);
-        dialogs = new DialogFragment();
+        FrameLayout frameLayout = (FrameLayout) findViewById(R.id.frame_view);
         VKSdk.login(this, scope);
 
+        DialogModel dialogModel = new DialogModel();
+        dialogFragment = new com.example.nickolas.vknick.DialogFragment();
     }
 
     @Override
@@ -80,6 +85,7 @@ public class MainPage extends AppCompatActivity {
             public void onResult(VKAccessToken res) {
                 Toast.makeText(MainPage.this, "Success", Toast.LENGTH_SHORT).show();
             }
+
             @Override
             public void onError(VKError error) {
                 Toast.makeText(MainPage.this, "Error", Toast.LENGTH_SHORT).show();

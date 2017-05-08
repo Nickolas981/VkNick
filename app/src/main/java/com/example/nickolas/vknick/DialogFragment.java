@@ -1,113 +1,52 @@
 package com.example.nickolas.vknick;
 
-import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.ListView;
 
-import com.example.nickolas.vknick.dummy.DummyContent;
-import com.example.nickolas.vknick.dummy.DummyContent.DummyItem;
 
-import java.util.List;
+public class DialogFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
 
-/**
- * A fragment representing a list of Items.
- * <p/>
- * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
- * interface.
- */
-public class DialogFragment extends Fragment {
-
-    // TODO: Customize parameter argument names
-    private static final String ARG_COLUMN_COUNT = "column-count";
-    // TODO: Customize parameters
-    private int mColumnCount = 1;
-    private OnListFragmentInteractionListener mListener;
-
-    /**
-     * Mandatory empty constructor for the fragment manager to instantiate the
-     * fragment (e.g. upon screen orientation changes).
-     */
-    Context context;
-
-    public DialogFragment(){
-
-    }
-
-    // TODO: Customize parameter initialization
-    @SuppressWarnings("unused")
-    public static DialogFragment newInstance(int columnCount) {
-        DialogFragment fragment = new DialogFragment();
-        Bundle args = new Bundle();
-        args.putInt(ARG_COLUMN_COUNT, columnCount);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
-        }
-    }
+    View view;
+    SwipeRefreshLayout swipeLayout;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_dialog_list, container, false);
+        // Inflate the layout for this fragment
 
-        // Set the adapter
-        if (view instanceof RecyclerView) {
-            Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
-            if (mColumnCount <= 1) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            } else {
-                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-            }
-            recyclerView.setAdapter(new MyDialogRecyclerViewAdapter(DummyContent.ITEMS, mListener));
-        }
+
+
+
+        view = inflater.inflate(R.layout.fragment_dialog, container, false);
+        swipeLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_container);
+
+        swipeLayout.setOnRefreshListener(this);
+        swipeLayout.setColorScheme(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
+        DialogModel.listView = (ListView) view.findViewById(R.id.dialogListView);
+
+        DialogModel.listView.setAdapter(new CustomDialogAdapter(view.getContext(), DialogModel.fullName, DialogModel.lastMessage, DialogModel.photo));
+
+
         return view;
     }
 
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnListFragmentInteractionListener) {
-            mListener = (OnListFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnListFragmentInteractionListener");
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnListFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onListFragmentInteraction(DummyItem item);
+    @Override public void onRefresh() {
+        new Handler().postDelayed(new Runnable() {
+            @Override public void run() {
+                DialogModel.update();
+                DialogModel.listView.setAdapter(new CustomDialogAdapter(view.getContext(), DialogModel.fullName, DialogModel.lastMessage, DialogModel.photo));
+                swipeLayout.setRefreshing(false);
+            }
+        }, 0);
     }
 }

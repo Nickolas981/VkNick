@@ -1,5 +1,8 @@
 package com.example.nickolas.vknick;
 
+import android.support.v7.app.ActionBarActivity;
+import android.widget.ListView;
+
 import com.vk.sdk.api.VKApi;
 import com.vk.sdk.api.VKApiConst;
 import com.vk.sdk.api.VKParameters;
@@ -16,13 +19,18 @@ import java.util.ArrayList;
  * Created by Nickolas on 08.05.2017.
  */
 
-public class DialogModel {
-    private ArrayList<String> photo;
-    private ArrayList<String> fullName;
-    private ArrayList<String> lastMessage;
-    private ArrayList<Integer> id;
+public class DialogModel  extends ActionBarActivity{
+    public static ArrayList<String> photo;
+    public static ArrayList<String> fullName;
+    public static ArrayList<String> lastMessage;
+    public static ArrayList<Integer> id;
+    public static ListView listView;
 
     public DialogModel() {
+        update();
+    }
+
+    public static void update(){
         final VKRequest request = VKApi.messages().getDialogs(VKParameters.from(VKApiConst.COUNT, 15));
         request.executeWithListener(new VKRequest.VKRequestListener() {
             @Override
@@ -48,7 +56,8 @@ public class DialogModel {
         });
     }
 
-    private String convertId() {
+
+    private static String convertId() {
         String result = id.get(0).toString();
 
         for (int i = 1; i < id.size(); i++) {
@@ -57,7 +66,7 @@ public class DialogModel {
         return result;
     }
 
-    private void setPhoto() {
+    private static void setPhoto() {
         VKRequest request = VKApi.users().get(VKParameters.from(VKApiConst.USER_IDS, convertId(), VKApiConst.FIELDS, "photo_50"));
         request.executeWithListener(new VKRequest.VKRequestListener() {
             @Override
@@ -66,11 +75,22 @@ public class DialogModel {
 
                 VKList<VKApiUser> userVKList = (VKList<VKApiUser>) response.parsedModel;
 
-                for (VKApiUser user : userVKList) {
-                    photo.add(user.photo_50);
+                for (int i = 0; i < userVKList.size(); i++) {
+                    if (fullName.get(i).equals(" ... ") || fullName.get(i).equals("") ) {
+                        photo.add(userVKList.get(i).photo_50);
+                        fullName.remove(i);
+                        fullName.add(i, userVKList.get(i).first_name + " " + userVKList.get(i).last_name);
+                    }
+                    else {
+                        photo.add("1");
+                    }
                 }
             }
         });
+    }
+
+    public int getCount(){
+        return fullName.size();
     }
 
     public String getFullName(int position) {

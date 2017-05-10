@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    tools:context="com.example.nickolas.vknick.MessagePage">
+
+    <EditText
+        android:id="@+id/etMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignTop="@+id/btnSendMessage"
+        android:layout_toStartOf="@+id/btnSendMessage"
+        android:ems="10"
+        android:hint="@string/message"
+        android:inputType="textCapSentences"
+        android:background="@android:color/transparent"
+        android:paddingLeft="10dp"/>
+
+    <ImageView
+        android:id="@+id/btnSendMessage"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:src="@drawable/ic_send_black_24dp"
+        android:text="@string/send" />
+
+    <com.omadahealth.github.swipyrefreshlayout.library.SwipyRefreshLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_above="@+id/etMessage"
+        android:id="@+id/swipe_refresh_message"
+        android:dividerHeight="0dp"
+        app:srl_direction="bottom">
+
+        <ListView
+            android:background="@color/messageBG"
+            android:id="@+id/messageListView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@null"
+            android:dividerHeight="0dp" />
+    </com.omadahealth.github.swipyrefreshlayout.library.SwipyRefreshLayout>
+
+</RelativeLayout>

@@ -9,9 +9,6 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.vk.sdk.api.model.VKApiDialog;
-import com.vk.sdk.api.model.VKList;
-
 import java.util.ArrayList;
 
 /**
@@ -21,20 +18,28 @@ import java.util.ArrayList;
 class CustomDialogAdapter extends BaseAdapter {
 
 
-    private ArrayList<String> users, messages;
+    private ArrayList<String> fullName, messages;
     private Context context;
     private ArrayList<String> photo;
+    private ArrayList<Boolean> readed;
+    private ArrayList<Boolean> out;
+    private String mPhoto;
+    private ArrayList<Integer> ids;
 
-    public CustomDialogAdapter(Context context, ArrayList<String> users, ArrayList<String> messages, ArrayList<String> photo) {
-        this.users = users;
-        this.messages = messages;
+    public CustomDialogAdapter(Context context, DialogModel dialogModel) {
+        fullName = dialogModel.fullName;
+        messages = dialogModel.lastMessage;
         this.context = context;
-        this.photo = photo;
+        photo = dialogModel.photo;
+        mPhoto = dialogModel.mPhoto;
+        readed = dialogModel.readed;
+        out = dialogModel.out;
+        ids = dialogModel.id;
     }
 
     @Override
     public int getCount() {
-        return users.size();
+        return fullName.size();
     }
 
     @Override
@@ -53,16 +58,31 @@ class CustomDialogAdapter extends BaseAdapter {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(R.layout.custom_dialogs_view, null);
         setData.userName = (TextView) view.findViewById(R.id.user_name);
+        setData.myAvatar = (ImageView) view.findViewById(R.id.my_avatar);
         setData.msg = (TextView) view.findViewById(R.id.msg);
-        setData.imageView = (ImageView)view.findViewById(R.id.dialogAvatarImage);
+        setData.imageView = (ImageView) view.findViewById(R.id.dialogAvatarImage);
+        if (out.get(position)) {
+            new DownloadImageTask(setData.myAvatar).execute(mPhoto);
+            setData.myAvatar.setVisibility(View.VISIBLE);
+            setData.msg.setPadding(10, 0, 0, 0);
+
+            if (!readed.get(position)) {
+                setData.msg.setBackgroundResource(R.color.unreadedColor);
+            }
+        } else if (!readed.get(position)) {
+            view.setBackgroundResource(R.color.unreadedColor);
+        }
         if (!photo.get(position).equals("1"))
             new DownloadImageTask(setData.imageView).execute(photo.get(position));
-        setData.userName.setText(users.get(position));
+        setData.userName.setText(fullName.get(position));
         setData.msg.setText(messages.get(position));
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(context, MessagePage.class);
+                intent.putExtra("user_name", fullName.get(position));
+                intent.putExtra("user_id", ids.get(position));
+                context.startActivity(intent);
             }
         });
         return view;
@@ -70,6 +90,7 @@ class CustomDialogAdapter extends BaseAdapter {
 
     private class SetData {
         TextView userName, msg;
-        ImageView imageView;
+        ImageView imageView, myAvatar;
+
     }
 }

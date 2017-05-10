@@ -1,6 +1,7 @@
 package com.example.nickolas.vknick;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -16,6 +17,8 @@ import com.vk.sdk.VKCallback;
 import com.vk.sdk.VKScope;
 import com.vk.sdk.VKSdk;
 import com.vk.sdk.api.VKError;
+
+import java.util.HashMap;
 
 public class MainPage extends AppCompatActivity {
 
@@ -70,12 +73,12 @@ public class MainPage extends AppCompatActivity {
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-
+        PhotoCash.photoCash = new HashMap<String, Bitmap>();
         FrameLayout frameLayout = (FrameLayout) findViewById(R.id.frame_view);
         VKSdk.login(this, scope);
 
-        DialogModel dialogModel = new DialogModel();
         dialogFragment = new com.example.nickolas.vknick.DialogFragment();
+        dialogFragment.dialogModel = new DialogModel();
     }
 
     @Override

@@ -19,14 +19,12 @@ public class DialogFragment extends Fragment implements SwipeRefreshLayout.OnRef
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
-//        dialogModel = new DialogModel();
         super.onCreate(savedInstanceState);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
 
         view = inflater.inflate(R.layout.fragment_dialog, container, false);
         swipeLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_container);
@@ -38,7 +36,6 @@ public class DialogFragment extends Fragment implements SwipeRefreshLayout.OnRef
                 android.R.color.holo_red_light);
 
         dialogModel.listView = (ListView) view.findViewById(R.id.dialogListView);
-//        dialogModel.listView.setAdapter(new CustomDialogAdapter(view.getContext(), dialogModel));
 
         return view;
     }
@@ -60,7 +57,6 @@ public class DialogFragment extends Fragment implements SwipeRefreshLayout.OnRef
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-//                dialogModel.listView.setAdapter(new CustomDialogAdapter(view.getContext(), dialogModel));
                 swipeLayout.setRefreshing(false);
             }
         }, 1000);

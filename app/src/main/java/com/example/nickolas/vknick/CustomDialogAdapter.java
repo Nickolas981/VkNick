@@ -18,28 +18,32 @@ import java.util.ArrayList;
 class CustomDialogAdapter extends BaseAdapter {
 
 
-    private ArrayList<String> fullName, messages;
+//    private ArrayList<String> fullName, messages;
     private Context context;
-    private ArrayList<String> photo;
-    private ArrayList<Boolean> readed;
-    private ArrayList<Boolean> out;
-    private String mPhoto;
-    private ArrayList<Integer> ids;
+//    private ArrayList<String> photo;
+//    private ArrayList<Boolean> readed;
+//    private ArrayList<Boolean> out;
+//    private String mPhoto;
+//    private ArrayList<Integer> ids;
+//    private ArrayList<Boolean> online;
+    DialogModel dialogModel;
 
     public CustomDialogAdapter(Context context, DialogModel dialogModel) {
-        fullName = dialogModel.fullName;
-        messages = dialogModel.lastMessage;
+//        fullName = dialogModel.fullName;
+//        messages = dialogModel.lastMessage;
         this.context = context;
-        photo = dialogModel.photo;
-        mPhoto = dialogModel.mPhoto;
-        readed = dialogModel.readed;
-        out = dialogModel.out;
-        ids = dialogModel.id;
+//        photo = dialogModel.photo;
+//        mPhoto = dialogModel.mPhoto;
+//        readed = dialogModel.readed;
+//        out = dialogModel.out;
+//        ids = dialogModel.id;
+        this.dialogModel = dialogModel;
     }
 
     @Override
     public int getCount() {
-        return fullName.size();
+//        return fullName.size();
+        return dialogModel.fullName.size();
     }
 
     @Override
@@ -61,27 +65,34 @@ class CustomDialogAdapter extends BaseAdapter {
         setData.myAvatar = (ImageView) view.findViewById(R.id.my_avatar);
         setData.msg = (TextView) view.findViewById(R.id.msg);
         setData.imageView = (ImageView) view.findViewById(R.id.dialogAvatarImage);
-        if (out.get(position)) {
-            new DownloadImageTask(setData.myAvatar).execute(mPhoto);
+        setData.onlineIndicator = (ImageView) view.findViewById(R.id.online_indicator);
+        if (dialogModel.out.get(position)) {
+            new DownloadImageTask(setData.myAvatar).execute(dialogModel.mPhoto);
             setData.myAvatar.setVisibility(View.VISIBLE);
             setData.msg.setPadding(10, 0, 0, 0);
 
-            if (!readed.get(position)) {
+            if (!dialogModel.readed.get(position)) {
                 setData.msg.setBackgroundResource(R.color.unreadedColor);
             }
-        } else if (!readed.get(position)) {
+        } else if (!dialogModel.readed.get(position)) {
             view.setBackgroundResource(R.color.unreadedColor);
         }
-        if (!photo.get(position).equals("1"))
-            new DownloadImageTask(setData.imageView).execute(photo.get(position));
-        setData.userName.setText(fullName.get(position));
-        setData.msg.setText(messages.get(position));
+        if (dialogModel.online[position]){
+            setData.onlineIndicator.setVisibility(View.VISIBLE);
+        }
+        if (dialogModel.onlinePhone[position]){
+            setData.onlineIndicator.setImageResource(R.drawable.ic_phone_android_black_24dp);
+        }
+        if (!dialogModel.photo[position].equals("1"))
+            new DownloadImageTask(setData.imageView).execute(dialogModel.photo[position]);
+        setData.userName.setText(dialogModel.fullName.get(position));
+        setData.msg.setText(dialogModel.lastMessage.get(position));
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, MessagePage.class);
-                intent.putExtra("user_name", fullName.get(position));
-                intent.putExtra("user_id", ids.get(position));
+                intent.putExtra("user_name", dialogModel.fullName.get(position));
+                intent.putExtra("user_id", dialogModel.id[position]);
                 context.startActivity(intent);
             }
         });
@@ -90,7 +101,7 @@ class CustomDialogAdapter extends BaseAdapter {
 
     private class SetData {
         TextView userName, msg;
-        ImageView imageView, myAvatar;
+        ImageView imageView, myAvatar, onlineIndicator;
 
     }
 }

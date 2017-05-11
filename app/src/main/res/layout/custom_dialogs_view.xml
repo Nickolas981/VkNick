@@ -36,8 +36,9 @@
                 android:layout_height="10dp"
                 android:layout_weight="1"
                 android:visibility="gone"
-                app:srcCompat="@android:drawable/presence_online"
-                tools:layout_gravity="center" />
+                android:layout_gravity="center"
+                android:layout_marginLeft="5dp"
+                app:srcCompat="@android:drawable/presence_online" />
         </LinearLayout>
 
 

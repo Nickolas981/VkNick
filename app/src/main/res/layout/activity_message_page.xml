@@ -27,6 +27,7 @@
         android:layout_height="45dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
+        android:padding="7dp"
         android:src="@drawable/ic_send_black_24dp"
         android:text="@string/send" />
 

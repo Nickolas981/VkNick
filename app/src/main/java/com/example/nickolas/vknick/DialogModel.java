@@ -13,6 +13,10 @@ import com.vk.sdk.api.model.VKApiGetDialogResponse;
 import com.vk.sdk.api.model.VKApiUser;
 import com.vk.sdk.api.model.VKList;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 /**
@@ -20,14 +24,19 @@ import java.util.ArrayList;
  */
 
 public class DialogModel extends ActionBarActivity {
-    public ArrayList<String> photo;
+    public String[] photo;
+    //    public ArrayList<String> photo;
     public ArrayList<String> fullName;
     public ArrayList<String> lastMessage;
-    public ArrayList<Integer> id;
+    public int[] id;
+    //    public ArrayList<Integer> id;
     public ListView listView;
     public String mPhoto;
     public ArrayList<Boolean> out;
     public ArrayList<Boolean> readed;
+    public Boolean[] online;
+    public Boolean[] onlinePhone;
+    public ArrayList<Boolean> isChat;
 
     public DialogModel() {
         update(null);
@@ -47,17 +56,39 @@ public class DialogModel extends ActionBarActivity {
 
                 lastMessage = new ArrayList<String>();
                 fullName = new ArrayList<String>();
-                photo = new ArrayList<String>();
-                id = new ArrayList<Integer>();
+                photo = new String[list.size()];
+                id = new int[list.size()];
                 out = new ArrayList<Boolean>();
                 readed = new ArrayList<Boolean>();
+                online = new Boolean[list.size()];
+                onlinePhone = new Boolean[list.size()];
+                isChat = new ArrayList<Boolean>();
 
-                for (final VKApiDialog msg : list) {
-                    lastMessage.add(msg.message.body);
-                    fullName.add(msg.message.title);
-                    id.add(msg.message.user_id);
-                    out.add(msg.message.out);
-                    readed.add(msg.message.read_state);
+                try {
+                    JSONArray array = response.json.getJSONObject("response").getJSONArray("items");
+                    System.out.println("asdasdasd");
+                    for (int i = 0; i < array.length(); i++) {
+                        JSONObject object = array.getJSONObject(i).getJSONObject("message");
+                        if (!(object.getString("title").equals("") || object.getString("title").equals(" ... "))) {
+                            photo[i] = object.getString("photo_50");
+                            id[i] = object.getInt("chat_id") + 2000000000;
+                            online[i] = false;
+                            onlinePhone [i] = false;
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    System.out.println("_________________________________________________________________________");
+                }
+
+                for (int i = 0; i < list.size(); i++) {
+                    lastMessage.add(list.get(i).message.body);
+                    fullName.add(list.get(i).message.title);
+                    if (id[i] == 0) {
+                        id[i] = list.get(i).message.user_id;
+                    }
+                    out.add(list.get(i).message.out);
+                    readed.add(list.get(i).message.read_state);
                 }
                 setPhoto(adapter);
             }
@@ -66,41 +97,55 @@ public class DialogModel extends ActionBarActivity {
 
 
     private String convertId() {
-        String result = id.get(0).toString();
+        String result = "";
 
-        for (int i = 1; i < id.size(); i++) {
-            result += " ," + id.get(i).toString();
+        for (int i = 0; i < id.length; i++) {
+            if (id[i] < 2000000000) {
+                result += " ," + id[i];
+            }
         }
 
         return result;
     }
 
     private void setPhoto(final CustomDialogAdapter adapter) {
-        VKRequest request = VKApi.users().get(VKParameters.from(VKApiConst.USER_IDS, convertId(), VKApiConst.FIELDS, "photo_50"));
+        int m = 0;
+        final VKRequest request = VKApi.users().get(VKParameters.from(VKApiConst.USER_IDS, convertId(), VKApiConst.FIELDS, "photo_50, online, online_mobile"));
         request.executeWithListener(new VKRequest.VKRequestListener() {
             @Override
             public void onComplete(VKResponse response) {
                 super.onComplete(response);
 
+                int m = 0;
                 VKList<VKApiUser> userVKList = (VKList<VKApiUser>) response.parsedModel;
 
                 for (int i = 0; i < userVKList.size(); i++) {
-                    if (fullName.get(i).equals(" ... ") || fullName.get(i).equals("")) {
-                        photo.add(userVKList.get(i).photo_50);
-                        fullName.remove(i);
-                        fullName.add(i, userVKList.get(i).first_name + " " + userVKList.get(i).last_name);
-                    } else {
-                        photo.add("1");
+                    if (fullName.get(i + m).equals(" ... ") || fullName.get(i + m).equals("")) {
+                        photo[i + m] = userVKList.get(i).photo_50;
+                        fullName.remove(i + m);
+                        fullName.add(i + m, userVKList.get(i).first_name + " " + userVKList.get(i).last_name);
+                        online[i + m] = userVKList.get(i).online;
+                        onlinePhone[i + m] = userVKList.get(i).online_mobile;
+                    }
+                    else{
+                        m++;
+                        photo[i + m] = userVKList.get(i).photo_50;
+                        fullName.remove(i + m);
+                        fullName.add(i + m, userVKList.get(i).first_name + " " + userVKList.get(i).last_name);
+                        online[i + m] = userVKList.get(i).online;
+                        onlinePhone[i + m] = userVKList.get(i).online_mobile;
+
                     }
                 }
-                if (adapter != null){
+                setMyPhoto();
+                if (adapter != null) {
                     listView.setAdapter(adapter);
                 }
             }
         });
     }
 
-    private void setMyPhoto(){
+    private void setMyPhoto() {
         VKRequest request = VKApi.users().get(VKParameters.from(VKApiConst.FIELDS, "photo_50"));
         request.executeWithListener(new VKRequest.VKRequestListener() {
             @Override
@@ -128,6 +173,6 @@ public class DialogModel extends ActionBarActivity {
     }
 
     public String getPhoto(int position) {
-        return photo.get(position);
+        return photo[position];
     }
 }

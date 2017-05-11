@@ -39,6 +39,7 @@ public class MainPage extends AppCompatActivity {
             switch (item.getItemId()) {
                 case R.id.navigation_music:
                     if (selected != R.id.navigation_music   ) {
+                        getSupportActionBar().setTitle("Music");
                         selected = R.id.navigation_music;
                         fragT.remove(dialogFragment);
                         fragT.commit();
@@ -46,6 +47,7 @@ public class MainPage extends AppCompatActivity {
                     return true;
                 case R.id.navigation_feed:
                     if (R.id.navigation_feed != selected) {
+                        getSupportActionBar().setTitle("Feed");
                         selected = R.id.navigation_feed;
                         fragT.remove(dialogFragment);
                         fragT.commit();
@@ -53,6 +55,7 @@ public class MainPage extends AppCompatActivity {
                     return true;
                 case R.id.navigation_messages:
                     if (selected != R.id.navigation_messages) {
+                        getSupportActionBar().setTitle("Messages");
                         selected = R.id.navigation_messages;
                         fragT.add(R.id.frame_view, dialogFragment);
                         fragT.commit();
@@ -68,7 +71,6 @@ public class MainPage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_page);
-
 //        mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);

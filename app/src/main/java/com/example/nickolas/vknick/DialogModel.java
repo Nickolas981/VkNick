@@ -18,6 +18,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by Nickolas on 08.05.2017.
@@ -37,6 +38,8 @@ public class DialogModel extends ActionBarActivity {
     public Boolean[] online;
     public Boolean[] onlinePhone;
     public ArrayList<Boolean> isChat;
+    public ArrayList<Integer> countOfUnreded;
+    public ArrayList<java.util.Date> time;
 
     public DialogModel() {
         update(null);
@@ -63,6 +66,8 @@ public class DialogModel extends ActionBarActivity {
                 online = new Boolean[list.size()];
                 onlinePhone = new Boolean[list.size()];
                 isChat = new ArrayList<Boolean>();
+                time = new ArrayList<java.util.Date>();
+                countOfUnreded = new ArrayList<Integer>();
 
                 try {
                     JSONArray array = response.json.getJSONObject("response").getJSONArray("items");
@@ -70,20 +75,27 @@ public class DialogModel extends ActionBarActivity {
                     for (int i = 0; i < array.length(); i++) {
                         JSONObject object = array.getJSONObject(i).getJSONObject("message");
                         if (!(object.getString("title").equals("") || object.getString("title").equals(" ... "))) {
-                            photo[i] = object.getString("photo_50");
+                            if (object.has("photo_50")){
+                                photo[i] = object.getString("photo_50");
+                            } else {
+                                photo[i] = "1";
+                            }
                             id[i] = object.getInt("chat_id") + 2000000000;
                             online[i] = false;
                             onlinePhone [i] = false;
                         }
                     }
                 } catch (JSONException e) {
+
                     e.printStackTrace();
                     System.out.println("_________________________________________________________________________");
                 }
 
                 for (int i = 0; i < list.size(); i++) {
+                    time.add(new java.util.Date(list.get(i).message.date * 1000));
                     lastMessage.add(list.get(i).message.body);
                     fullName.add(list.get(i).message.title);
+                    countOfUnreded.add(list.get(i).unread);
                     if (id[i] == 0) {
                         id[i] = list.get(i).message.user_id;
                     }

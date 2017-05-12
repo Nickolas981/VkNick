@@ -67,6 +67,9 @@ public class CustomMessageAdapter extends BaseAdapter {
             if (isChat) {
                 setData.senderAvatar = (ImageView) view.findViewById(R.id.sender_avatar);
                 setData.senderAvatar.setVisibility(View.VISIBLE);
+                if (position != 0 && messages[position - 1].user_id == messages[position].user_id){
+                    setData.senderAvatar.setVisibility(View.INVISIBLE);
+                }
                 new DownloadImageTask(setData.senderAvatar).execute(photo.get(messages[position].user_id));
             }
         }

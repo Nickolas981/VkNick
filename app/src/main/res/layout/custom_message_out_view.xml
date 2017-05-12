@@ -5,19 +5,31 @@
     android:orientation="vertical"
     android:id="@+id/out_message_container">
 
+    <!--<LinearLayout-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginTop="5dp"-->
+        <!--android:layout_marginBottom="5dp"-->
+        <!--android:layout_marginRight="5dp"-->
+        <!--android:maxWidth="250dp"-->
+        <!--android:padding="10dp"-->
+        <!--android:background="@drawable/rounded_corner_out"-->
+        <!--&gt;-->
+        <TextView
+            android:id="@+id/out_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginBottom="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/rounded_corner_out"
+            android:maxWidth="250dp"
+            android:padding="10dp"
+            android:text="asdasdasdasdasdasdasdadadasdasdasd"
+            android:textColor="@color/vk_black" />
 
-    <TextView
-        android:id="@+id/out_message"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:layout_marginBottom="5dp"
-        android:layout_marginRight="5dp"
-        android:layout_marginTop="5dp"
-        android:background="@drawable/rounded_corner_out"
-        android:maxWidth="250dp"
-        android:padding="10dp"
-        android:text="asdasdasdasdasdasdasdadadasdasdasd"
-        android:textColor="@color/vk_black" />
+    <!--</LinearLayout>-->
+
 
 </LinearLayout>

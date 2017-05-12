@@ -18,31 +18,16 @@ import java.util.ArrayList;
 class CustomDialogAdapter extends BaseAdapter {
 
 
-//    private ArrayList<String> fullName, messages;
     private Context context;
-//    private ArrayList<String> photo;
-//    private ArrayList<Boolean> readed;
-//    private ArrayList<Boolean> out;
-//    private String mPhoto;
-//    private ArrayList<Integer> ids;
-//    private ArrayList<Boolean> online;
     DialogModel dialogModel;
 
     public CustomDialogAdapter(Context context, DialogModel dialogModel) {
-//        fullName = dialogModel.fullName;
-//        messages = dialogModel.lastMessage;
         this.context = context;
-//        photo = dialogModel.photo;
-//        mPhoto = dialogModel.mPhoto;
-//        readed = dialogModel.readed;
-//        out = dialogModel.out;
-//        ids = dialogModel.id;
         this.dialogModel = dialogModel;
     }
 
     @Override
     public int getCount() {
-//        return fullName.size();
         return dialogModel.fullName.size();
     }
 
@@ -66,16 +51,27 @@ class CustomDialogAdapter extends BaseAdapter {
         setData.msg = (TextView) view.findViewById(R.id.msg);
         setData.imageView = (ImageView) view.findViewById(R.id.dialogAvatarImage);
         setData.onlineIndicator = (ImageView) view.findViewById(R.id.online_indicator);
+        setData.unreadedIndicator = (TextView) view.findViewById(R.id.count_of_messages);
+        setData.time = (TextView) view.findViewById(R.id.last_message_time);
+
+        String min = Integer.toString(dialogModel.time.get(position).getMinutes());
+        min = dialogModel.time.get(position).getMinutes() > 9? min:"0" + min;
+        String time = Long.toString(dialogModel.time.get(position).getHours()) + ":" + min;
+
+
         if (dialogModel.out.get(position)) {
             new DownloadImageTask(setData.myAvatar).execute(dialogModel.mPhoto);
             setData.myAvatar.setVisibility(View.VISIBLE);
             setData.msg.setPadding(10, 0, 0, 0);
 
             if (!dialogModel.readed.get(position)) {
+//                ((View) view.findViewById(R.id.dialogMessage)).setBackgroundResource(R.color.unreadedColor);
                 setData.msg.setBackgroundResource(R.color.unreadedColor);
             }
         } else if (!dialogModel.readed.get(position)) {
             view.setBackgroundResource(R.color.unreadedColor);
+            setData.unreadedIndicator.setText(dialogModel.countOfUnreded.get(position).toString());
+            setData.unreadedIndicator.setVisibility(View.VISIBLE);
         }
         if (dialogModel.online[position]){
             setData.onlineIndicator.setVisibility(View.VISIBLE);
@@ -86,6 +82,7 @@ class CustomDialogAdapter extends BaseAdapter {
         if (!dialogModel.photo[position].equals("1"))
             new DownloadImageTask(setData.imageView).execute(dialogModel.photo[position]);
         setData.userName.setText(dialogModel.fullName.get(position));
+        setData.time.setText(time);
         setData.msg.setText(dialogModel.lastMessage.get(position));
         view.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,7 +97,7 @@ class CustomDialogAdapter extends BaseAdapter {
     }
 
     private class SetData {
-        TextView userName, msg;
+        TextView userName, msg, unreadedIndicator, time;
         ImageView imageView, myAvatar, onlineIndicator;
 
     }

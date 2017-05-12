@@ -134,7 +134,8 @@ public class MessagePage extends AppCompatActivity implements View.OnClickListen
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.btnSendMessage) {
-            VKRequest vkRequest = new VKRequest("messages.send", VKParameters.from(VKApiConst.USER_ID, id, VKApiConst.MESSAGE, etSendingMessage.getText().toString()));
+            String req = isChat? "chat_id":"user_id";
+            VKRequest vkRequest = new VKRequest("messages.send", VKParameters.from(req, isChat? id - 2000000000: id, VKApiConst.MESSAGE, etSendingMessage.getText().toString()));
             etSendingMessage.setText("");
             vkRequest.executeWithListener(new VKRequest.VKRequestListener() {
                 @Override

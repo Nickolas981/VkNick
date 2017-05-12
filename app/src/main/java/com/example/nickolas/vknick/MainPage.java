@@ -8,8 +8,6 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
-import android.widget.FrameLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.vk.sdk.VKAccessToken;
@@ -21,8 +19,6 @@ import com.vk.sdk.api.VKError;
 import java.util.HashMap;
 
 public class MainPage extends AppCompatActivity {
-
-    private TextView mTextMessage;
 
 
     private FragmentTransaction fragT;
@@ -38,7 +34,7 @@ public class MainPage extends AppCompatActivity {
             fragT = getSupportFragmentManager().beginTransaction();
             switch (item.getItemId()) {
                 case R.id.navigation_music:
-                    if (selected != R.id.navigation_music   ) {
+                    if (selected != R.id.navigation_music) {
                         getSupportActionBar().setTitle("Music");
                         selected = R.id.navigation_music;
                         fragT.remove(dialogFragment);
@@ -71,12 +67,10 @@ public class MainPage extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_page);
-//        mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         PhotoCash.photoCash = new HashMap<String, Bitmap>();
-        FrameLayout frameLayout = (FrameLayout) findViewById(R.id.frame_view);
         VKSdk.login(this, scope);
 
         dialogFragment = new com.example.nickolas.vknick.DialogFragment();

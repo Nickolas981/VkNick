@@ -47,6 +47,7 @@ public class DialogModel extends ActionBarActivity {
     }
 
     public void update(final CustomDialogAdapter adapter) {
+
         final VKRequest request = VKApi.messages().getDialogs(VKParameters.from(VKApiConst.COUNT, 15));
         request.executeWithListener(new VKRequest.VKRequestListener() {
             @Override
@@ -56,6 +57,7 @@ public class DialogModel extends ActionBarActivity {
                 VKApiGetDialogResponse getDialogResponse = (VKApiGetDialogResponse) response.parsedModel;
 
                 final VKList<VKApiDialog> list = getDialogResponse.items;
+
 
                 lastMessage = new ArrayList<String>();
                 fullName = new ArrayList<String>();
@@ -68,6 +70,7 @@ public class DialogModel extends ActionBarActivity {
                 isChat = new ArrayList<Boolean>();
                 time = new ArrayList<java.util.Date>();
                 countOfUnreded = new ArrayList<Integer>();
+
 
                 try {
                     JSONArray array = response.json.getJSONObject("response").getJSONArray("items");

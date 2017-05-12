@@ -22,7 +22,9 @@ import com.vk.sdk.api.model.VKList;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class MessagePage extends AppCompatActivity implements View.OnClickListener, SwipyRefreshLayout.OnRefreshListener {
@@ -35,10 +37,12 @@ public class MessagePage extends AppCompatActivity implements View.OnClickListen
     boolean isChat;
     HashMap<Integer, String> photo;
     int id;
+    ArrayList<String>[] attachedPhoto;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         photo = new HashMap<>();
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_message_page);
 
@@ -87,16 +91,28 @@ public class MessagePage extends AppCompatActivity implements View.OnClickListen
                 try {
                     JSONArray array = response.json.getJSONObject("response").getJSONArray("items");
                     msg = new VKApiMessage[array.length()];
+                    attachedPhoto = new ArrayList[array.length()];
                     for (int i = 0; i < array.length(); i++) {
-                        VKApiMessage mes = new VKApiMessage(array.getJSONObject(i));
+                        JSONObject obj = array.getJSONObject(i);
+                        VKApiMessage mes = new VKApiMessage(obj);
                         msg[array.length() - 1 - i] = mes;
+                        if (obj.has("attachments")) {
+                            JSONArray attachments = obj.getJSONArray("attachments");
+                            attachedPhoto[array.length() - 1 - i] = new ArrayList<String>();
+                            for (int j = 0; j < attachments.length(); j++) {
+                                JSONObject attachment = attachments.getJSONObject(j);
+                                if (attachment.getString("type").equals("photo")) {
+                                    attachedPhoto[array.length() - 1 - i].add(attachment.getJSONObject("photo").getString("photo_604"));
+                                }
+                            }
+                        }
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
                 if (!isChat) {
-                    CustomMessageAdapter customMessageAdapter = new CustomMessageAdapter(MessagePage.this, msg, isChat, photo);
-                    messageListView.setAdapter(new CustomMessageAdapter(MessagePage.this, msg, isChat, photo));
+                    CustomMessageAdapter customMessageAdapter = new CustomMessageAdapter(MessagePage.this, msg, isChat, photo, attachedPhoto);
+                    messageListView.setAdapter(new CustomMessageAdapter(MessagePage.this, msg, isChat, photo, attachedPhoto));
                     messageListView.setSelection(customMessageAdapter.getCount() - 1);
                 } else {
                     setChat();
@@ -123,8 +139,8 @@ public class MessagePage extends AppCompatActivity implements View.OnClickListen
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                CustomMessageAdapter customMessageAdapter = new CustomMessageAdapter(MessagePage.this, msg, isChat, photo);
-                messageListView.setAdapter(new CustomMessageAdapter(MessagePage.this, msg, isChat, photo));
+                CustomMessageAdapter customMessageAdapter = new CustomMessageAdapter(MessagePage.this, msg, isChat, photo, attachedPhoto);
+                messageListView.setAdapter(new CustomMessageAdapter(MessagePage.this, msg, isChat, photo, attachedPhoto));
                 messageListView.setSelection(customMessageAdapter.getCount() - 1);
             }
         });
@@ -134,8 +150,8 @@ public class MessagePage extends AppCompatActivity implements View.OnClickListen
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.btnSendMessage) {
-            String req = isChat? "chat_id":"user_id";
-            VKRequest vkRequest = new VKRequest("messages.send", VKParameters.from(req, isChat? id - 2000000000: id, VKApiConst.MESSAGE, etSendingMessage.getText().toString()));
+            String req = isChat ? "chat_id" : "user_id";
+            VKRequest vkRequest = new VKRequest("messages.send", VKParameters.from(req, isChat ? id - 2000000000 : id, VKApiConst.MESSAGE, etSendingMessage.getText().toString()));
             etSendingMessage.setText("");
             vkRequest.executeWithListener(new VKRequest.VKRequestListener() {
                 @Override

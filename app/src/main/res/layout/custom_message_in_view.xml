@@ -19,18 +19,41 @@
         android:visibility="gone"
         tools:layout_gravity="top" />
 
-    <TextView
-        android:id="@+id/in_message"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="start"
         android:layout_marginLeft="5dp"
         android:background="@drawable/rounded_corner_in"
         android:maxWidth="250dp"
+        android:orientation="vertical"
         android:padding="10dp"
-        android:text="asdasd"
-        android:textColor="@color/vk_black"
         android:layout_alignParentTop="true"
-        android:layout_toEndOf="@+id/sender_avatar" />
+        android:layout_toEndOf="@+id/sender_avatar">
+
+        <TextView
+            android:id="@+id/in_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxWidth="250dp"
+            android:text="asdasdasdasdasdadasdasdadadasdasd"
+            android:textColor="@color/vk_black" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/photoList"
+            android:orientation="vertical">
+
+        </LinearLayout>
+
+        <!--<ListView-->
+            <!--android:id="@+id/photoList"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content">-->
+
+
+
+    </LinearLayout>
+
 
 </RelativeLayout>

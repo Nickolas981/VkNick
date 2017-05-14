@@ -26,6 +26,8 @@ public class MainPage extends AppCompatActivity {
     private int selected;
 
     com.example.nickolas.vknick.DialogFragment dialogFragment;
+    FeedFragment feedFragment;
+
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -45,7 +47,7 @@ public class MainPage extends AppCompatActivity {
                     if (R.id.navigation_feed != selected) {
                         getSupportActionBar().setTitle("Feed");
                         selected = R.id.navigation_feed;
-                        fragT.remove(dialogFragment);
+                        fragT.replace(R.id.frame_view, feedFragment);
                         fragT.commit();
                     }
                     return true;
@@ -53,7 +55,7 @@ public class MainPage extends AppCompatActivity {
                     if (selected != R.id.navigation_messages) {
                         getSupportActionBar().setTitle("Messages");
                         selected = R.id.navigation_messages;
-                        fragT.add(R.id.frame_view, dialogFragment);
+                        fragT.replace(R.id.frame_view, dialogFragment);
                         fragT.commit();
                     }
                     return true;
@@ -73,6 +75,7 @@ public class MainPage extends AppCompatActivity {
         PhotoCash.photoCash = new HashMap<String, Bitmap>();
         VKSdk.login(this, scope);
 
+        feedFragment = new FeedFragment();
         dialogFragment = new com.example.nickolas.vknick.DialogFragment();
         dialogFragment.dialogModel = new DialogModel();
     }

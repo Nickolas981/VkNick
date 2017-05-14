@@ -19,7 +19,7 @@
         android:ems="10"
         android:hint="@string/message"
         android:inputType="textCapSentences|textAutoCorrect|textAutoComplete"
-        android:paddingLeft="10dp" />
+        android:paddingLeft="20dp" />
 
     <ImageView
         android:id="@+id/btnSendMessage"

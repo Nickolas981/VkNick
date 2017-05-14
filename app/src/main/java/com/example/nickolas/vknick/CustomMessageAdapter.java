@@ -14,7 +14,6 @@ import com.vk.sdk.api.model.VKApiMessage;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.zip.Inflater;
 
 /**
  * Created by Nickolas on 02.05.2017.
@@ -61,7 +60,7 @@ public class CustomMessageAdapter extends BaseAdapter {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view;
         if (messages[position].out) {
-            view = inflater.inflate(R.layout.custom_message_out_view,null);
+            view = inflater.inflate(R.layout.custom_message_out_view, null);
             setData.textView = (TextView) view.findViewById(R.id.out_message);
             setData.container = (View) view.findViewById(R.id.out_message_container);
         } else {
@@ -81,16 +80,28 @@ public class CustomMessageAdapter extends BaseAdapter {
         if (!messages[position].read_state) {
             setData.container.setBackgroundResource(R.color.unreadedColor);
         }
-        if (attachedPhoto[position] != null && !attachedPhoto[position].isEmpty()){
+        if (attachedPhoto[position] != null && !attachedPhoto[position].isEmpty()) {
 
-            for (int i = 0; i < attachedPhoto[position].size(); i ++){
-                View view1 = inflater.inflate(R.layout.custom_image_view, null);
-                ImageView imageView = (ImageView) view1.findViewById(R.id.image_in_message);
-                new DownloadImageTask(imageView).execute(attachedPhoto[position].get(i));
-                LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.photoList);
-                linearLayout.addView(view1);
+            View view1;
+            ImageView[] imageView;
+            if (messages[position].body.equals("")) {
+                setData.textView.setVisibility(View.GONE);
             }
 
+            view1 = inflater.inflate(GetResourceIdByString.getResId("photo_" + Integer.toString(attachedPhoto[position].size()), R.layout.class), null);
+
+            imageView = new ImageView[attachedPhoto[position].size()];
+
+            imageView[0] = (ImageView) view1.findViewById(GetResourceIdByString.getResId("photo_1", R.id.class));
+
+            for (int j = 0; j < imageView.length; j++) {
+                imageView[j] = (ImageView) view1.findViewById(GetResourceIdByString.getResId("photo_" + (j+1), R.id.class));
+                new DownloadImageTask(imageView[j]).execute(attachedPhoto[position].get(j));
+            }
+
+
+            LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.photoList);
+            linearLayout.addView(view1);
         }
 
         return view;

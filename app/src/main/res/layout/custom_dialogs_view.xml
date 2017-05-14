@@ -12,7 +12,7 @@
         android:layout_height="50dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:src="@drawable/test_iamge" />
+        android:src="@drawable/gradient" />
 
     <LinearLayout
         android:id="@+id/linearLayout"

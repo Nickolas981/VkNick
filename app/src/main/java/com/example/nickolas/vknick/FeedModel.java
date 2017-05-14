@@ -23,21 +23,18 @@ public class FeedModel {
     ArrayList<PostModel> posts;
     ListView listView;
     String startFrom;
-    Context context;
     ArrayList<Group> groups;
 
 
-    public FeedModel(Context context, ListView listView) {
+    public FeedModel() {
         update();
-        startFrom = "";
-        this.context = context;
-        this.listView = listView;
-        posts = new ArrayList<>();
-        groups = new ArrayList<>();
     }
 
-    void update() {                                                              //сюда вставивть  адаптер
-        VKRequest request = new VKRequest("newsfeed.get", VKParameters.from(VKApiConst.FILTERS, "post", VKApiConst.COUNT, "20"));
+    void update() {                                     //сюда вставивть  адаптер
+
+        posts = new ArrayList<>();
+        groups = new ArrayList<>();
+        VKRequest request = new VKRequest("newsfeed.get", VKParameters.from(VKApiConst.FILTERS, "post", VKApiConst.COUNT, "1"));
         request.executeWithListener(new VKRequest.VKRequestListener() {
             @Override
             public void onComplete(VKResponse response) {
@@ -63,22 +60,22 @@ public class FeedModel {
                         post.setID(item.getInt("post_id"));
                         post.setSourceID(-(item.getInt("source_id")));
                         post.setText(item.getString("text"));
-                        post.setIsAd(item.getBoolean("marked_as_ads"));
+                        post.setIsAd(item.getInt("marked_as_ads"));
                         post.setTime(convertTime(item.getInt("date")));
-                        JSONObject attachments = item.getJSONObject("attachments");
+                        JSONArray attachments = item.getJSONArray("attachments");
                         for (int j = 0; j < attachments.length(); j++) {
-                            if (attachments.getString("type").equals("photo")) {
-                                JSONObject photo = attachments.getJSONObject("photo");
+                            if (attachments.getJSONObject(j).getString("type").equals("photo")) {
+                                JSONObject photo = attachments.getJSONObject(j).getJSONObject("photo");
                                 post.addPostPhoto(photo.getString("photo_604"));
                             }
                         }
-                        JSONObject comments = new JSONObject("comments");
+                        JSONObject comments = item.getJSONObject("comments");
                         post.setComments(comments.getInt("count"));
-                        post.setCanComment(comments.getBoolean("can_post"));
-                        JSONObject likes = new JSONObject("likes");
+                        post.setCanComment(comments.getInt("can_post"));
+                        JSONObject likes = item.getJSONObject("likes");
                         post.setLikes(likes.getInt("count"));
-                        post.setLiked(likes.getBoolean("user_likes"));
-                        JSONObject reposts = new JSONObject("reposts");
+                        post.setLiked(likes.getInt("user_likes"));
+                        JSONObject reposts = item.getJSONObject("reposts");
                         post.setShares(reposts.getInt("count"));
                         post.setGroup(findGroup(post.getSourceID()));
                         posts.add(post);

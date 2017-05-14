@@ -76,6 +76,7 @@ public class MainPage extends AppCompatActivity {
         VKSdk.login(this, scope);
 
         feedFragment = new FeedFragment();
+        feedFragment.feedModel = new FeedModel();
         dialogFragment = new com.example.nickolas.vknick.DialogFragment();
         dialogFragment.dialogModel = new DialogModel();
     }

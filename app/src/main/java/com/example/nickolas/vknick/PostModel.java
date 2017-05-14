@@ -11,8 +11,7 @@ public class PostModel {
 
 
     private ArrayList<String> postPhotos;
-    private int likes, shares, comments, sourceID, ID;
-    private boolean isLiked, canComment, isAd;
+    private int likes, shares, comments, sourceID, ID, isAd, isLiked, canComment;
 
     public void setGroup(Group group) {
         this.group = group;
@@ -62,20 +61,20 @@ public class PostModel {
         this.comments = comments;
     }
 
-    public void setLiked(boolean liked) {
+    public void setLiked(int liked) {
         isLiked = liked;
     }
 
-    public boolean isAd() {
+    public int isAd() {
         return isAd;
     }
 
-    public void setCanComment(boolean canComment) {
+    public void setCanComment(int canComment) {
         this.canComment = canComment;
 
     }
 
-    public void setIsAd(boolean isAd) {
+    public void setIsAd(int isAd) {
         this.isAd = isAd;
     }
 
@@ -115,11 +114,11 @@ public class PostModel {
         return ID;
     }
 
-    public boolean isLiked() {
+    public int isLiked() {
         return isLiked;
     }
 
-    public boolean isCanComment() {
+    public int isCanComment() {
         return canComment;
     }
 }

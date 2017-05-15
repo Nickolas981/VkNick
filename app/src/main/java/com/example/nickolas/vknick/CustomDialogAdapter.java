@@ -9,7 +9,9 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by Nickolas on 30.04.2017.
@@ -54,9 +56,12 @@ class CustomDialogAdapter extends BaseAdapter {
         setData.unreadedIndicator = (TextView) view.findViewById(R.id.count_of_messages);
         setData.time = (TextView) view.findViewById(R.id.last_message_time);
 
-        String min = Integer.toString(dialogModel.time.get(position).getMinutes());
-        min = dialogModel.time.get(position).getMinutes() > 9? min:"0" + min;
-        String time = Long.toString(dialogModel.time.get(position).getHours()) + ":" + min;
+//        String min = Integer.toString(dialogModel.time.get(position).getMinutes());
+//        min = dialogModel.time.get(position).getMinutes() > 9? min:"0" + min;
+//        String time = Long.toString(dialogModel.time.get(position).getHours()) + ":" + min;
+
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+        String time = sdf.format(dialogModel.time.get(position));
 
 
         if (dialogModel.out.get(position)) {
@@ -65,7 +70,6 @@ class CustomDialogAdapter extends BaseAdapter {
             setData.msg.setPadding(10, 0, 0, 0);
 
             if (!dialogModel.readed.get(position)) {
-//                ((View) view.findViewById(R.id.dialogMessage)).setBackgroundResource(R.color.unreadedColor);
                 setData.msg.setBackgroundResource(R.color.unreadedColor);
             }
         } else if (!dialogModel.readed.get(position)) {

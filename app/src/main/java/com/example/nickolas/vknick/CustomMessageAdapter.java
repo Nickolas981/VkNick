@@ -87,7 +87,6 @@ public class CustomMessageAdapter extends BaseAdapter {
             if (messages[position].body.equals("")) {
                 setData.textView.setVisibility(View.GONE);
             }
-
             view1 = inflater.inflate(GetResourceIdByString.getResId("photo_" + Integer.toString(attachedPhoto[position].size()), R.layout.class), null);
 
             imageView = new ImageView[attachedPhoto[position].size()];
@@ -100,8 +99,9 @@ public class CustomMessageAdapter extends BaseAdapter {
             }
 
 
-            LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.photoList);
-            linearLayout.addView(view1);
+            setData.photoList = (LinearLayout) view.findViewById(R.id.photoList);
+            setData.photoList.setVisibility(View.VISIBLE);
+            setData.photoList.addView(view1);
         }
 
         return view;
@@ -111,6 +111,6 @@ public class CustomMessageAdapter extends BaseAdapter {
         ImageView senderAvatar;
         TextView textView;
         View container;
-        ListView photoList;
+        LinearLayout photoList;
     }
 }

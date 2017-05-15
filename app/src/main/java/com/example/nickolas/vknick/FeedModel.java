@@ -1,6 +1,7 @@
 package com.example.nickolas.vknick;
 
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.widget.ListView;
 
 import com.vk.sdk.api.VKApiConst;
@@ -12,6 +13,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -21,20 +23,22 @@ import java.util.Date;
 
 public class FeedModel {
     ArrayList<PostModel> posts;
-    ListView listView;
+    RecyclerView recyclerView;
     String startFrom;
     ArrayList<Group> groups;
 
 
     public FeedModel() {
         update();
+//        update(null);
     }
 
+//    void update(CustomFeedAdapter adapter) {                                     //сюда вставивть  адаптер
     void update() {                                     //сюда вставивть  адаптер
 
         posts = new ArrayList<>();
         groups = new ArrayList<>();
-        VKRequest request = new VKRequest("newsfeed.get", VKParameters.from(VKApiConst.FILTERS, "post", VKApiConst.COUNT, "1"));
+        VKRequest request = new VKRequest("newsfeed.get", VKParameters.from(VKApiConst.FILTERS, "post", VKApiConst.COUNT, "10"));
         request.executeWithListener(new VKRequest.VKRequestListener() {
             @Override
             public void onComplete(VKResponse response) {
@@ -61,12 +65,14 @@ public class FeedModel {
                         post.setSourceID(-(item.getInt("source_id")));
                         post.setText(item.getString("text"));
                         post.setIsAd(item.getInt("marked_as_ads"));
-                        post.setTime(convertTime(item.getInt("date")));
-                        JSONArray attachments = item.getJSONArray("attachments");
-                        for (int j = 0; j < attachments.length(); j++) {
-                            if (attachments.getJSONObject(j).getString("type").equals("photo")) {
-                                JSONObject photo = attachments.getJSONObject(j).getJSONObject("photo");
-                                post.addPostPhoto(photo.getString("photo_604"));
+                        post.setTime(convertTime(item.getInt("date") * 1000));
+                        if (item.has("attachments")){
+                            JSONArray attachments = item.getJSONArray("attachments");
+                            for (int j = 0; j < attachments.length(); j++) {
+                                if (attachments.getJSONObject(j).getString("type").equals("photo")) {
+                                    JSONObject photo = attachments.getJSONObject(j).getJSONObject("photo");
+                                    post.addPostPhoto(photo.getString("photo_604"));
+                                }
                             }
                         }
                         JSONObject comments = item.getJSONObject("comments");
@@ -84,6 +90,10 @@ public class FeedModel {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+//
+//                if (adapter != null){
+//                    recyclerView.setAdapter(adapter);
+//                }
             }
         });
     }
@@ -97,14 +107,11 @@ public class FeedModel {
         return null;
     }
 
-    private String convertTime(int t) {
-        Date date = new Date(t * 1000);
-        String hours = Integer.toString(date.getHours());
-        String minutes = Integer.toString(date.getMinutes());
-        if (minutes.length() == 1) {
-            minutes = "0" + minutes;
-        }
-        return (hours + ":" + minutes);
+    private String convertTime(long t) {
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+        Date date = new Date(t);
+        String formattedDate = sdf.format(date);
+    return formattedDate;
     }
 
 

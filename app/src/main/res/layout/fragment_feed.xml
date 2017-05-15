@@ -4,11 +4,29 @@
     android:layout_height="match_parent"
     tools:context="com.example.nickolas.vknick.FeedFragment">
 
-    <ListView
-        android:id="@+id/feedListView"
+
+    <!--<TextView-->
+    <!--android:layout_width="0dp"-->
+    <!--android:layout_height="50dp"-->
+    <!--android:layout_weight="1"-->
+    <!--android:text="adsfasdfasdfasdfasdfasdfasdfsafdasdfasdfasdfasdf"-->
+    <!--android:background="#3d3"/>-->
+
+    <!--<ListView-->
+    <!--android:id="@+id/feedListView"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--tools:layout_editor_absoluteX="0dp"-->
+    <!--tools:layout_editor_absoluteY="0dp" />-->
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/feed_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:scrollbars="vertical"
         tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="0dp" />
+        tools:layout_editor_absoluteY="0dp"
+        android:background="#b5cee1"/>
+
 
 </FrameLayout>

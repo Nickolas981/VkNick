@@ -18,7 +18,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 /**
  * Created by Nickolas on 08.05.2017.
@@ -78,14 +77,10 @@ public class DialogModel extends ActionBarActivity {
                     for (int i = 0; i < array.length(); i++) {
                         JSONObject object = array.getJSONObject(i).getJSONObject("message");
                         if (!(object.getString("title").equals("") || object.getString("title").equals(" ... "))) {
-                            if (object.has("photo_50")){
-                                photo[i] = object.getString("photo_50");
-                            } else {
-                                photo[i] = "1";
-                            }
+                            photo[i] = object.has("photo_50")? object.getString("photo_50") : "1";
                             id[i] = object.getInt("chat_id") + 2000000000;
                             online[i] = false;
-                            onlinePhone [i] = false;
+                            onlinePhone[i] = false;
                         }
                     }
                 } catch (JSONException e) {
@@ -135,23 +130,17 @@ public class DialogModel extends ActionBarActivity {
                 VKList<VKApiUser> userVKList = (VKList<VKApiUser>) response.parsedModel;
 
                 for (int i = 0; i < userVKList.size(); i++) {
-                    if (fullName.get(i + m).equals(" ... ") || fullName.get(i + m).equals("")) {
-                        photo[i + m] = userVKList.get(i).photo_50;
-                        fullName.remove(i + m);
-                        fullName.add(i + m, userVKList.get(i).first_name + " " + userVKList.get(i).last_name);
-                        online[i + m] = userVKList.get(i).online;
-                        onlinePhone[i + m] = userVKList.get(i).online_mobile;
-                    }
-                    else{
-                        m++;
-                        photo[i + m] = userVKList.get(i).photo_50;
-                        fullName.remove(i + m);
-                        fullName.add(i + m, userVKList.get(i).first_name + " " + userVKList.get(i).last_name);
-                        online[i + m] = userVKList.get(i).online;
-                        onlinePhone[i + m] = userVKList.get(i).online_mobile;
 
+                    while (!(fullName.get(i + m).equals(" ... ") || fullName.get(i + m).equals(""))) {
+                        m++;
                     }
+                    photo[i + m] = userVKList.get(i).photo_50;
+                    fullName.remove(i + m);
+                    fullName.add(i + m, userVKList.get(i).first_name + " " + userVKList.get(i).last_name);
+                    online[i + m] = userVKList.get(i).online;
+                    onlinePhone[i + m] = userVKList.get(i).online_mobile;
                 }
+
                 setMyPhoto();
                 if (adapter != null) {
                     listView.setAdapter(adapter);

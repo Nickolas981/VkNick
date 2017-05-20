@@ -2,6 +2,7 @@ package com.example.nickolas.vknick;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.widget.Adapter;
 import android.widget.ListView;
 
 import com.vk.sdk.api.VKApiConst;
@@ -29,12 +30,12 @@ public class FeedModel {
 
 
     public FeedModel() {
-        update();
-//        update(null);
+//        update();
+        update(null);
     }
 
 //    void update(CustomFeedAdapter adapter) {                                     //сюда вставивть  адаптер
-    void update() {                                     //сюда вставивть  адаптер
+    void update(final FeedAdapter adapter) {                                     //сюда вставивть  адаптер
 
         posts = new ArrayList<>();
         groups = new ArrayList<>();
@@ -65,7 +66,7 @@ public class FeedModel {
                         post.setSourceID(-(item.getInt("source_id")));
                         post.setText(item.getString("text"));
                         post.setIsAd(item.getInt("marked_as_ads"));
-                        post.setTime(convertTime(item.getInt("date") * 1000));
+                        post.setTime(convertTime(item.getInt("date")));
                         if (item.has("attachments")){
                             JSONArray attachments = item.getJSONArray("attachments");
                             for (int j = 0; j < attachments.length(); j++) {
@@ -90,10 +91,9 @@ public class FeedModel {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-//
-//                if (adapter != null){
-//                    recyclerView.setAdapter(adapter);
-//                }
+                if (adapter != null){
+                    recyclerView.setAdapter(adapter);
+                }
             }
         });
     }
@@ -108,8 +108,10 @@ public class FeedModel {
     }
 
     private String convertTime(long t) {
+        String ti = Long.toString(t);
+        ti += "000";
+        Date date = new Date(Long.parseLong(ti));
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-        Date date = new Date(t);
         String formattedDate = sdf.format(date);
     return formattedDate;
     }

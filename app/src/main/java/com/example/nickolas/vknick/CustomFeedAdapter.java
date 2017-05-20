@@ -58,8 +58,8 @@ public class CustomFeedAdapter extends BaseAdapter {
         setData.likes = (TextView) view.findViewById(R.id.post_like_count);
         setData.comments = (TextView) view.findViewById(R.id.post_comment_count);
         setData.reposts = (TextView) view.findViewById(R.id.post_share_count);
-
         setData.title.setText(feedModel.posts.get(position).getText());
+        
 
 
         return view;

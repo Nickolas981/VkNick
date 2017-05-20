@@ -121,4 +121,5 @@ public class PostModel {
     public int isCanComment() {
         return canComment;
     }
+
 }
